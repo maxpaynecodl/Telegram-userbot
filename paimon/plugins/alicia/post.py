@@ -1,6 +1,3 @@
-# plugin made for paimon by @Kakashi_HTK(TG)/@ashwinstr(GH)
-# before porting please ask to Kakashi
-
 
 import asyncio
 
@@ -48,6 +45,7 @@ async def copy_channel_(message: Message):
         except BaseException:
             pass
         to_ = await paimon.get_chat(to_chann)
+        delay = float(delay) if "." in delay else int(delay)
     except BaseException:
         return await message.edit(
             f"`Given to_channel '{to_chann}' is invalid...`", del_in=5
@@ -92,7 +90,6 @@ async def copy_channel_(message: Message):
     except FloodWait:
         await asyncio.sleep(10)
         await asyncio.sleep(20)
-
     except Exception as e:
         await CHANNEL.log(f"ERROR: {str(e)}")
         return await message.edit(
