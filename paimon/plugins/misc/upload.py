@@ -182,6 +182,7 @@ async def upload(
     with_thumb: bool = True,
     custom_thumb: str = "",
     log: bool = True,
+    force_document: bool = True,
 ):
     if "wt" in message.flags:
         with_thumb = False
@@ -240,6 +241,7 @@ async def doc_upload(
             document=str_path,
             thumb=thumb,
             caption=path.name,
+            force_document=True,
             parse_mode="html",
             disable_notification=True,
             progress=progress,
@@ -474,5 +476,4 @@ async def finalize(message: Message, msg: Message, start_t):
         await message.edit("`Process Canceled!`", del_in=5)
     else:
         end_t = datetime.now()
-        m_s = (end_t - start_t).seconds
-        await message.edit(f"Uploaded in {m_s} seconds", del_in=10)
+        (end_t - start_t).seconds

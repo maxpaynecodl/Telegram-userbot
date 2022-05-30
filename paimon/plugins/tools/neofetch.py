@@ -14,15 +14,15 @@ from paimon.utils import runcmd
 @paimon.on_cmd(
     "neofetch",
     about={
-        "header": "Neofetch é uma ferramenta de informação do sistema de linha de comando",
-        "description": "exibe informações sobre seu sistema operacional, software e hardware de uma forma estética e visualmente agradável.",
+        "header": "Neofetch is a command line system information tool",
+        "description": "displays information about your operating system, software and hardware in an aesthetic and visually pleasing way.",
         "usage": " {tr}neofetch",
-        "flags": {"-img": "Para obter como imagem"},
+        "flags": {"-img": "to get as image"},
         "examples": ["{tr}neofetch", "{tr}neofetch -img"],
     },
 )
 async def neofetch_(message: Message):
-    await message.edit("Obtendo informações do sistema ...")
+    await message.edit("Getting system information ...")
     reply = message.reply_to_message
     reply_id = reply.message_id if reply else None
     if "-img" in message.flags:
@@ -39,7 +39,7 @@ async def neofetch_(message: Message):
 
 async def neo_image():
     neofetch = (await runcmd("neofetch --stdout"))[0]
-    font_color = (255, 42, 38)  # Red
+    font_color = (3, 150, 153)  # Deep sea
     white = (255, 255, 255)
     if "Debian" in neofetch:
         base_pic = "https://telegra.ph/file/1f62cbef3fe8e24afc6f7.jpg"
@@ -54,19 +54,19 @@ async def neo_image():
     photo = Image.open(BytesIO(get(base_pic).content))
     drawing = ImageDraw.Draw(photo)
     font = ImageFont.truetype(BytesIO(get(font_url).content), 14)
-    x = 0
-    y = 0
+    x = 5
+    y = 5
     for u_text in neofetch.splitlines():
         if ":" in u_text:
             ms = u_text.split(":", 1)
             drawing.text(
-                xy=(315, 45 + x),
+                xy=(320, 55 + x),
                 text=ms[0] + ":",
                 font=font,
                 fill=font_color,
             )
             drawing.text(
-                xy=((8.5 * len(ms[0])) + 315, 45 + x), text=ms[1], font=font, fill=white
+                xy=((8.5 * len(ms[0])) + 320, 55 + x), text=ms[1], font=font, fill=white
             )
         else:
             color = font_color if y == 0 else white

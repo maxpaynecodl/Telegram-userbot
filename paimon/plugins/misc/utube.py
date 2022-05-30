@@ -15,7 +15,7 @@ from pathlib import Path
 from time import time
 
 import wget
-import youtube_dl as ytdl
+import yt_dlp as ytdl
 
 from paimon import Config, Message, paimon, pool
 from paimon.utils import humanbytes, time_formatter
@@ -129,27 +129,27 @@ async def ytDown(message: Message):
         desiredFormat1 = str(message.flags.get("a", ""))
         desiredFormat2 = str(message.flags.get("v", ""))
         if "m" in message.flags:
-            retcode = await _mp3Dl([message.filtered_input_str], __progress, startTime)
+            retcode = await _mp3Dl([message.input_or_reply_str], __progress, startTime)
         elif all(k in message.flags for k in ("a", "v")):
             # 1st format must contain the video
             desiredFormat = "+".join([desiredFormat2, desiredFormat1])
             retcode = await _tubeDl(
-                [message.filtered_input_str], __progress, startTime, desiredFormat
+                [message.input_or_reply_str], __progress, startTime, desiredFormat
             )
         elif "a" in message.flags:
             desiredFormat = desiredFormat1
             retcode = await _tubeDl(
-                [message.filtered_input_str], __progress, startTime, desiredFormat
+                [message.input_or_reply_str], __progress, startTime, desiredFormat
             )
         elif "v" in message.flags:
             desiredFormat = desiredFormat2 + "+bestaudio"
             retcode = await _tubeDl(
-                [message.filtered_input_str], __progress, startTime, desiredFormat
+                [message.input_or_reply_str], __progress, startTime, desiredFormat
             )
         else:
-            retcode = await _tubeDl([message.filtered_input_str], __progress, startTime)
+            retcode = await _tubeDl([message.input_or_reply_str], __progress, startTime)
     else:
-        retcode = await _tubeDl([message.filtered_input_str], __progress, startTime)
+        retcode = await _tubeDl([message.input_or_reply_str], __progress, startTime)
     if retcode == 0:
         _fpath = ""
         for _path in glob.glob(os.path.join(Config.DOWN_PATH, str(startTime), "*")):
@@ -158,10 +158,7 @@ async def ytDown(message: Message):
         if not _fpath:
             await message.err("nothing found !")
             return
-        await message.edit(
-            f"**YTDL completed in {round(time() - startTime)} seconds**\n`{_fpath}`"
-        )
-        if "t" in message.flags:
+        if "t" not in message.flags:
             await upload(message, Path(_fpath))
     else:
         await message.edit(str(retcode))

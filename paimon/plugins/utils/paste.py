@@ -1,11 +1,4 @@
 """ paste text to bin """
-
-# Copyright (C) 2020-2021 by UsergeTeam@Github, < https://github.com/UsergeTeam >.
-#
-# This file is part of < https://github.com/UsergeTeam/Userge > project,
-# and is released under the "GNU v3.0 License Agreement".
-# Please see < https://github.com/UsergeTeam/Userge/blob/master/LICENSE >
-#
 # All rights reserved.
 
 import os
@@ -43,7 +36,7 @@ class PasteService:
                 break
         return token
 
-    # pylint: disable=W0613
+    # pylint: disable = W0613, R0201
     async def paste(
         self, ses: aiohttp.ClientSession, text: str, file_type: Optional[str]
     ) -> Optional[str]:
@@ -129,13 +122,13 @@ class Pasting(PasteService):
     async def paste(
         self, ses: aiohttp.ClientSession, text: str, file_type: Optional[str]
     ) -> Optional[str]:
-        data = {"content": text}
+        data = {"heading": "paimon", "content": text}
         if file_type:
             data["code"] = "true"
         async with ses.post(self._url + "api", json=data) as resp:
             if resp.status != 200:
                 return None
-            return self._url + await resp.text()
+            return self._url + (await resp.json())["key"]
 
 
 class PastyLus(PasteService):
@@ -213,7 +206,7 @@ _SERVICES: Dict[str, PasteService] = {
     "-s": SpaceBin(),
 }
 
-_DEFAULT_SERVICE = "-s" if Config.HEROKU_ENV else "-n"
+_DEFAULT_SERVICE = "-k" if Config.HEROKU_ENV else "-n"
 _HEADERS = {
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 ("
     "KHTML, like Gecko) Cafari/537.36"
@@ -260,7 +253,7 @@ async def paste_(message: Message) -> None:
     replied = message.reply_to_message
     file_type = None
     if not text and replied:
-        if replied.document and replied.document.file_size < 2 ** 20 * 10:
+        if replied.document and replied.document.file_size < 2**20 * 10:
             file_type = os.path.splitext(replied.document.file_name)[1].lstrip(".")
             path = await replied.download(Config.DOWN_PATH)
             async with aiofiles.open(path, "r") as d_f:

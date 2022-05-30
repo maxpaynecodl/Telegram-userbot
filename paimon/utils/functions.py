@@ -27,12 +27,13 @@ async def media_to_image(message):
         or replied.animation
         or replied.video
         or replied.audio
+        or replied.document
     ):
         await message.err("`Media Type Is Invalid ! See HELP.`")
         return
     if not os.path.isdir(Config.DOWN_PATH):
         os.makedirs(Config.DOWN_PATH)
-    await message.edit("`Ah Shit, Here We Go Again ...`")
+    await message.edit("`Processing...`")
     dls = await message.client.download_media(
         message=message.reply_to_message,
         file_name=Config.DOWN_PATH,
@@ -57,6 +58,22 @@ async def media_to_image(message):
             await message.err("```Sticker not found...```")
             return
         dls_loc = stkr_file
+    elif replied.sticker and replied.sticker.file_name.endswith(".webm"):
+        await message.edit("`Converting Media To Image ...`")
+        jpg_file = os.path.join(Config.DOWN_PATH, "image.jpg")
+        await take_screen_shot(dls_loc, 0, jpg_file)
+        os.remove(dls_loc)
+        if not os.path.lexists(jpg_file):
+            await message.err("This Gif is Gey (｡ì _ í｡), Task Failed Successfully !")
+            return
+        dls_loc = jpg_file
+    elif replied.document:
+        doc_file = os.path.join(Config.DOWN_PATH, "document.png")
+        os.rename(dls_loc, doc_file)
+        if not os.path.lexists(doc_file):
+            await message.err("```file not found...```")
+            return
+        dls_loc = doc_file
     elif replied.animation or replied.video:
         await message.edit("`Converting Media To Image ...`")
         jpg_file = os.path.join(Config.DOWN_PATH, "image.jpg")
@@ -81,6 +98,7 @@ async def media_to_image(message):
         dls_loc = jpg_file
     await message.edit("`Almost Done ...`")
     return dls_loc
+    os.remove(dls_loc)
 
 
 # https://github.com/carpedm20/emoji/blob/master/emoji/core.py
@@ -156,7 +174,7 @@ def check_owner(func):
                 pass
         else:
             await c_q.answer(
-                "Apenas meu mestre pode acessar isso !!\n\n     Instale seu paimon",
+                "Only my master can access this!!\n\n  deploy your own companion",
                 show_alert=True,
             )
 

@@ -1,8 +1,12 @@
 """ custom thumbnail """
 
-# Copyright (C) 2020 by UsergeTeam@Github, < https://github.com/UsergeTeam >.
+# Copyright (C) 2020-2022 by UsergeTeam@Github, < https://github.com/UsergeTeam >.
 #
-# Edited by Alicia
+# This file is part of < https://github.com/UsergeTeam/Userge > project,
+# and is released under the "GNU v3.0 License Agreement".
+# Please see < https://github.com/UsergeTeam/Userge/blob/master/LICENSE >
+#
+# All rights reserved.
 
 import base64
 import os
@@ -68,10 +72,10 @@ async def clear_thumb_nail(message: Message):
     if os.path.exists(Config.THUMB_PATH):
         os.remove(Config.THUMB_PATH)
         await SAVED_SETTINGS.find_one_and_delete({"_id": "CUSTOM_THUMB"})
-        await message.edit("✅ Custom thumbnail deleted succesfully.", del_in=3)
+        await message.edit("Custom thumbnail deleted succesfully.", del_in=3)
     elif os.path.exists("resources/paimon.png"):
         os.remove("resources/paimon.png")
-        await message.edit("✅ Default thumbnail deleted succesfully.", del_in=3)
+        await message.edit("Default thumbnail deleted succesfully.", del_in=3)
     else:
         await message.delete()
 
@@ -90,4 +94,4 @@ async def get_thumb_nail(message: Message):
         await CHANNEL.fwd_msg(msg)
         await message.delete()
     else:
-        await message.err("Custom Thumbnail Not Found!")
+        await message.edit("`Custom Thumbnail Not Found!`", del_in=5)

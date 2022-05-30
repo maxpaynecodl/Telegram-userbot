@@ -1,5 +1,13 @@
 """ setup gmute """
 
+# Copyright (C) 2020 by paimonTeam@Github, < https://github.com/paimonTeam >.
+#
+# This file is part of < https://github.com/paimonTeam/paimon > project,
+# and is released under the "GNU v3.0 License Agreement".
+# Please see < https://github.com/uaudith/paimon/blob/master/LICENSE >
+#
+# All rights reserved
+
 import asyncio
 
 from pyrogram.errors.exceptions.bad_request_400 import (
@@ -9,7 +17,6 @@ from pyrogram.errors.exceptions.bad_request_400 import (
 from pyrogram.types import ChatPermissions
 
 from paimon import Config, Message, filters, get_collection, paimon
-from paimon.utils.tools import is_dev
 
 GMUTE_USER_BASE = get_collection("GMUTE_USER")
 CHANNEL = paimon.getCLogger(__name__)
@@ -30,14 +37,11 @@ async def gmute_user(msg: Message):
     """Mute a user globally"""
     await msg.edit("`Globally Muting this User...`")
     user_id, reason = msg.extract_user_and_text
-    if is_dev(user_id):
-        await msg.reply("`Lol ele é meu desenvolvedor porque iria muta-lo?.`")
-        return
     if not user_id:
         await msg.edit(
             "`no valid user_id or message specified,`"
             "`don't do .help gmute for more info. "
-            "Coz no one's gonna help ya`(｡ŏ_ŏ) ⚠"
+            "Coz no one's gonna help ya`"
         )
         return
     get_mem = await msg.client.get_user_dict(user_id)
@@ -51,12 +55,12 @@ async def gmute_user(msg: Message):
         return
     user_id = get_mem["id"]
     if user_id == msg.from_user.id:
-        await msg.err(r"LoL. Why would I GMuting myself ¯\(°_o)/¯")
+        await msg.err(r"LoL. Why would I GMuting myself Â¯\(Â°_o)/Â¯")
         return
     if user_id in Config.SUDO_USERS:
         await msg.edit(
             "`That user is in my Sudo List, Hence I can't GMute him.`\n\n"
-            "**Tip:** `Remove them from Sudo List and try again. (¬_¬)`",
+            "**Tip:** `Remove them from Sudo List and try again. (Â¬_Â¬)`",
             del_in=5,
         )
         return
@@ -93,7 +97,7 @@ async def gmute_user(msg: Message):
             pass
     if msg.reply_to_message:
         await CHANNEL.fwd_msg(msg.reply_to_message)
-        await CHANNEL.log(f"$GMUTE #prid{user_id} ⬆️")
+        await CHANNEL.log(f"$GMUTE #prid{user_id} â¬†ï¸")
     LOG.info("G-Muted %s", str(user_id))
 
 
@@ -182,7 +186,7 @@ async def gmute_at_entry(msg: Message):
             await asyncio.gather(
                 msg.client.restrict_chat_member(chat_id, user_id, ChatPermissions()),
                 msg.reply(
-                    r"\\**#𝑿_Antispam**//"
+                    r"\\**#ð‘¿_Antispam**//"
                     "\n\nGlobally Muted User Detected in this Chat.\n\n"
                     f"**User:** [{first_name}](tg://user?id={user_id})\n"
                     f"**ID:** `{user_id}`\n**Reason:** `{gmuted['reason']}`\n\n"

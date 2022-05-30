@@ -4,10 +4,8 @@
 
 from telegraph import upload_file
 
-from paimon import Message, get_collection, get_version, paimon
-from paimon.plugins.bot.alive import Bot_Alive
+from paimon import Message, get_collection, paimon
 from paimon.utils import rand_array
-from paimon.versions import __python_version__
 
 SAVED = get_collection("ALIVE_DB")
 
@@ -98,14 +96,9 @@ async def view_del_ani(message: Message):
     alive_msg = f"""
 {msg}
 
-{mmsg}
+     {mmsg}
 
-• **Modo** :  `{Bot_Alive._get_mode()}`
-• **Uptime**  :  `{paimon.uptime}`
-• **Bot Version**  :  `v{get_version()}`
-• **Python Version**  :  `v{__python_version__}`
-
-    ✨ [magic](https://t.me/eightbituwu) | 👾 [repo](https://github.com/Thegreatfoxxgoddess/Paimon)
+✨ [lil ol meh bio](https://t.me/my_thingsuwu) | 🚀 [repo](https://github.com/ashwinstr/UX-Jutsu)
 """
     if media.endswith((".gif", ".mp4")):
         await message.client.send_animation(
@@ -136,6 +129,9 @@ async def del_a_msg(message: Message):
 
 
 FRASES = (
-    "Quotes",
-    "quotes2",
+    "morning cutie",
+    "hello mommy",
+    "ohayo onisan",
+    "yamete",
+    "yamero",
 )

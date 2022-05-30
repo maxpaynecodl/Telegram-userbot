@@ -1,3 +1,4 @@
+
 import asyncio
 
 from pyrogram.errors import FloodWait
@@ -60,10 +61,19 @@ async def copy_channel_(message: Message):
         )
     to_admin = await admin_or_creator(to_.id, me_.id)
     if not to_admin["is_admin"] and not to_admin["is_creator"]:
+        delay = split(" ", maxsplit=1)
+    try:
+        delay = float(delay) if "." in delay else int(delay)
+    except ValueError as e:
+        await message.edit(e)
+        await message.reply_sticker(
+            sticker="CAACAgIAAx0CW6USIQACCwVh62uAu8M5kiBQgKbj8R3s9xEtQQAC6AAD-H-lCtLIOj4Om6I7HgQ"
+        )
+        return
         return await message.edit(
             f"Need admin rights to copy posts to {to_.title}...", del_in=5
         )
-    total = 0
+    total = 100
     list_ = []
     await message.edit(
         f"`Copying posts from `<b>{from_.title}</b>` to `<b>{to_.title}</b>..."
@@ -74,9 +84,12 @@ async def copy_channel_(message: Message):
     try:
         for one_msg in list_:
             await paimon.copy_message(to_.id, from_.id, one_msg)
-            total += 1
+            await asyncio.sleep(delay)
+            await asyncio.sleep(300)
+            total += 100
     except FloodWait:
-        await asyncio.sleep(delay)
+        await asyncio.sleep(10)
+        await asyncio.sleep(20)
     except Exception as e:
         await CHANNEL.log(f"ERROR: {str(e)}")
         return await message.edit(
